@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Eljaouhary Zakaria — Technicien d'Exploitation Industrielle</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* ===== CSS VARIABLES ===== */
+:root{
+  --indigo:#4F46E5;
+  --pink:#EC4899;
+  --cyan:#06B6D4;
+  --amber:#F59E0B;
+  --bg:#0A0A0F;
+  --bg2:#0F0F1A;
+  --bg3:#13131F;
+  --surface:#1A1A2E;
+  --surface2:#1E1E35;
+  --text:#F0F0FF;
+  --text2:#A0A0C0;
+  --text3:#6060A0;
+  --border:rgba(255,255,255,0.07);
+  --glow-indigo:rgba(79,70,229,0.4);
+  --glow-pink:rgba(236,72,153,0.4);
+  --glow-cyan:rgba(6,182,212,0.4);
+  --glow-amber:rgba(245,158,11,0.4);
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--indigo),var(--pink));border-radius:3px;}
+
+/* ===== NOISE OVERLAY ===== */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9999;
+  opacity:0.35;
+}
+
+/* ===== CUSTOM CURSOR ===== */
+#cursor-dot{
+  position:fixed;width:8px;height:8px;
+  background:var(--cyan);
+  border-radius:50%;
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  box-shadow:0 0 12px var(--cyan),0 0 24px var(--cyan);
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:2px solid rgba(6,182,212,0.5);
+  border-radius:50%;
+  pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  transition:transform .12s ease,width .2s,height .2s,border-color .2s;
+}
+
+/* ===== LOADING SCREEN ===== */
+#loader{
+  position:fixed;inset:0;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:99997;
+  transition:opacity .8s ease, visibility .8s ease;
+}
+#loader.fade-out{opacity:0;visibility:hidden;}
+.loader-initials{
+  font-family:'Syne',sans-serif;
+  font-size:5rem;font-weight:800;
+  background:linear-gradient(135deg,var(--indigo),var(--pink),var(--cyan),var(--amber));
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:gradientShift 2s ease infinite, pulseScale 1s ease-in-out infinite alternate;
+  letter-spacing:-2px;
+}
+@keyframes pulseScale{from{transform:scale(1);}to{transform:scale(1.05);}}
+.loader-text{
+  font-family:'DM Sans',sans-serif;
+  color:var(--text2);font-size:.9rem;
+  letter-spacing:4px;text-transform:uppercase;
+  margin-top:1rem;margin-bottom:2rem;
+}
+.loader-bar-wrap{width:220px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;}
+.loader-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan));
+  background-size:200%;
+  animation:loadProgress 2s ease forwards, gradientShift 1s linear infinite;
+  border-radius:2px;
+}
+@keyframes loadProgress{0%{width:0%;}60%{width:75%;}100%{width:100%;}}
+
+/* ===== PARTICLE CANVAS ===== */
+#particle-canvas{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+}
+
+/* ===== NAVBAR ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:.9rem 5%;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,10,15,0.7);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-100%);
+  animation:navSlide .6s .5s ease forwards;
+}
+@keyframes navSlide{to{transform:translateY(0);}}
+.nav-logo{
+  font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;
+  background:linear-gradient(135deg,var(--cyan),var(--indigo));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;letter-spacing:-0.5px;
+}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{
+  font-family:'DM Sans',sans-serif;font-size:.85rem;
+  color:var(--text2);text-decoration:none;
+  font-weight:500;letter-spacing:.5px;
+  position:relative;transition:color .3s;
+  text-transform:uppercase;font-size:.75rem;letter-spacing:1.5px;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:2px;
+  background:linear-gradient(90deg,var(--cyan),var(--indigo));
+  transition:width .3s ease;
+}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{width:100%;}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.nav-burger span{display:block;width:24px;height:2px;background:var(--text2);border-radius:2px;transition:.3s;}
+
+/* ===== MAIN LAYOUT ===== */
+main{position:relative;z-index:1;}
+section{position:relative;overflow:hidden;}
+
+/* ===== SECTION TITLES ===== */
+.section-label{
+  font-size:.7rem;letter-spacing:4px;text-transform:uppercase;
+  color:var(--cyan);font-weight:600;margin-bottom:.5rem;
+  font-family:'DM Sans',sans-serif;
+}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);
+  font-weight:800;line-height:1.1;
+  background:linear-gradient(135deg,var(--text) 60%,var(--text2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:.5rem;
+}
+.section-sub{color:var(--text2);font-size:1rem;line-height:1.6;max-width:600px;}
+
+/* ===== HERO ===== */
+#hero{
+  min-height:100vh;padding:0 5%;
+  display:flex;align-items:center;
+}
+.hero-inner{
+  width:100%;display:flex;align-items:center;
+  justify-content:space-between;gap:4rem;
+  padding-top:6rem;
+}
+.hero-left{flex:1;min-width:0;}
+.avail-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);
+  padding:.35rem .9rem;border-radius:100px;
+  font-size:.75rem;font-weight:600;color:var(--cyan);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:1.5rem;
+}
+.avail-tag::before{
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 8px var(--cyan);
+  animation:blink 1.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero-name{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.8rem,6vw,5rem);
+  font-weight:800;line-height:1;letter-spacing:-2px;
+  background:linear-gradient(135deg,#fff 0%,var(--cyan) 30%,var(--indigo) 55%,var(--pink) 80%,var(--amber) 100%);
+  background-size:300% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
+  margin-bottom:.5rem;
+}
+@keyframes shimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+@keyframes gradientShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+.hero-title{
+  font-size:clamp(1rem,2vw,1.3rem);color:var(--text2);
+  font-weight:400;margin-bottom:1.5rem;letter-spacing:.5px;
+}
+.hero-desc{
+  color:var(--text3);font-size:.95rem;line-height:1.7;
+  max-width:480px;margin-bottom:2.5rem;
+}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.75rem 1.75rem;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-weight:600;
+  font-size:.9rem;text-decoration:none;
+  transition:all .3s ease;cursor:none;
+  position:relative;overflow:hidden;
+}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0.08);
+  transform:translateX(-100%);
+  transition:transform .4s ease;
+}
+.btn:hover::after{transform:translateX(0);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--indigo),var(--pink));
+  color:#fff;border:none;
+  box-shadow:0 8px 30px rgba(79,70,229,0.4);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(79,70,229,0.55);}
+.btn-secondary{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-secondary:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px);}
+
+/* ===== HERO CARD ===== */
+.hero-right{flex:0 0 380px;display:flex;align-items:center;justify-content:center;position:relative;}
+.card-orbit{
+  position:relative;width:320px;height:320px;
+  display:flex;align-items:center;justify-content:center;
+}
+.orbit-glow{
+  position:absolute;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(79,70,229,0.25) 0%,transparent 70%);
+  animation:orbitPulse 3s ease-in-out infinite;
+}
+@keyframes orbitPulse{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(1.1);opacity:1;}}
+.orbit-ring{
+  position:absolute;width:300px;height:300px;border-radius:50%;
+  border:2px dashed rgba(6,182,212,0.35);
+  animation:spin 20s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.orbit-ring-2{
+  position:absolute;width:260px;height:260px;border-radius:50%;
+  border:1px dashed rgba(236,72,153,0.25);
+  animation:spin 15s linear infinite reverse;
+}
+.float-card{
+  position:relative;z-index:2;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:2rem;width:230px;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.05);
+  animation:float3d 6s ease-in-out infinite;
+}
+@keyframes float3d{
+  0%,100%{transform:translateY(0) rotateX(0deg) rotateY(0deg);}
+  25%{transform:translateY(-10px) rotateX(3deg) rotateY(-3deg);}
+  50%{transform:translateY(-5px) rotateX(-2deg) rotateY(4deg);}
+  75%{transform:translateY(-12px) rotateX(2deg) rotateY(-2deg);}
+}
+.card-avatar{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,var(--indigo),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1rem;
+  font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fff;
+  box-shadow:0 0 30px rgba(79,70,229,0.5);
+}
+.card-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.2rem;}
+.card-role{font-size:.7rem;color:var(--text2);margin-bottom:1.5rem;letter-spacing:.5px;}
+.card-stats{display:flex;justify-content:space-between;gap:.5rem;}
+.stat{text-align:center;flex:1;}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--cyan);}
+.stat-lab{font-size:.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;line-height:1.3;}
+
+/* ===== SKILLS SECTION ===== */
+#skills{padding:7rem 5%;}
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:3rem;}
+.skills-bars{display:flex;flex-direction:column;gap:1.5rem;}
+.skill-item{}
+.skill-header{display:flex;justify-content:space-between;margin-bottom:.5rem;}
+.skill-name{font-size:.85rem;font-weight:600;color:var(--text);}
+.skill-pct{font-size:.8rem;color:var(--text2);}
+.skill-track{
+  height:6px;background:rgba(255,255,255,0.07);
+  border-radius:3px;overflow:hidden;position:relative;
+}
+.skill-fill{
+  height:100%;width:0%;border-radius:3px;
+  transition:width 1.2s cubic-bezier(0.25,1,0.5,1);
+  position:relative;overflow:hidden;
+}
+.skill-fill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
+  transform:translateX(-100%);
+  transition:transform 0s;
+}
+.skill-fill.animated::after{
+  animation:shimmerBar .8s ease .8s forwards;
+}
+@keyframes shimmerBar{to{transform:translateX(200%);}}
+.skill-fill.indigo{background:linear-gradient(90deg,var(--indigo),#818CF8);}
+.skill-fill.pink{background:linear-gradient(90deg,var(--pink),#F472B6);}
+.skill-fill.cyan{background:linear-gradient(90deg,var(--cyan),#67E8F9);}
+.skill-fill.amber{background:linear-gradient(90deg,var(--amber),#FCD34D);}
+
+.tech-cloud{display:flex;flex-wrap:wrap;gap:.7rem;align-items:flex-start;padding-top:.5rem;}
+.tech-chip{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.45rem 1rem;border-radius:100px;
+  font-size:.75rem;font-weight:600;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text2);
+  cursor:default;
+  transition:all .3s ease;
+}
+.tech-chip:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+.tech-chip.ic{border-color:rgba(79,70,229,.3);color:var(--indigo);}
+.tech-chip.pk{border-color:rgba(236,72,153,.3);color:var(--pink);}
+.tech-chip.cy{border-color:rgba(6,182,212,.3);color:var(--cyan);}
+.tech-chip.am{border-color:rgba(245,158,11,.3);color:var(--amber);}
+
+/* ===== MARQUEE ===== */
+.marquee-section{
+  padding:2rem 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  background:var(--bg2);
+  overflow:hidden;
+}
+.marquee-track{
+  display:flex;gap:4rem;
+  animation:marquee 18s linear infinite;
+  width:max-content;
+}
+@keyframes marquee{to{transform:translateX(-50%);}}
+.marquee-item{
+  display:flex;align-items:center;gap:.75rem;
+  white-space:nowrap;
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:.85rem;color:var(--text3);
+  letter-spacing:1px;text-transform:uppercase;
+}
+.marquee-item .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--pink);opacity:.6;
+}
+
+/* ===== EXPERIENCE ===== */
+#experience{padding:7rem 5%;background:var(--bg2);}
+.timeline{margin-top:3rem;position:relative;padding-left:2.5rem;}
+.timeline::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--indigo),var(--pink),var(--cyan),var(--amber));
+  animation:borderFlow 3s ease infinite;
+}
+@keyframes borderFlow{
+  0%,100%{opacity:.7;}50%{opacity:1;}
+}
+.tl-item{
+  position:relative;margin-bottom:3rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;
+  transition:all .4s ease;
+}
+.tl-item:hover{
+  transform:translateX(8px);
+  border-color:rgba(79,70,229,.35);
+  box-shadow:0 0 40px rgba(79,70,229,0.15),0 20px 60px rgba(0,0,0,0.3);
+}
+.tl-dot{
+  position:absolute;left:-3rem;top:2rem;
+  width:14px;height:14px;border-radius:50%;
+  background:linear-gradient(135deg,var(--indigo),var(--pink));
+  border:2px solid var(--bg2);
+  box-shadow:0 0 12px var(--glow-indigo);
+}
+.tl-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;}
+.tl-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.25rem;}
+.tl-company{color:var(--cyan);font-size:.85rem;font-weight:600;}
+.tl-meta{display:flex;flex-direction:column;align-items:flex-end;gap:.25rem;}
+.tl-date{
+  font-size:.75rem;color:var(--text3);
+  background:rgba(255,255,255,0.05);
+  padding:.3rem .8rem;border-radius:100px;border:1px solid var(--border);
+  white-space:nowrap;
+}
+.tl-loc{font-size:.75rem;color:var(--text3);}
+.tl-desc{
+  list-style:none;display:flex;flex-direction:column;gap:.5rem;
+  margin-bottom:1rem;
+}
+.tl-desc li{
+  font-size:.88rem;color:var(--text2);line-height:1.6;
+  padding-left:1rem;position:relative;
+}
+.tl-desc li::before{
+  content:'▸';position:absolute;left:0;color:var(--indigo);font-size:.7rem;top:3px;
+}
+.tl-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;}
+.chip{
+  padding:.25rem .7rem;border-radius:100px;
+  font-size:.65rem;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.chip-indigo{background:rgba(79,70,229,.15);color:#818CF8;border:1px solid rgba(79,70,229,.25);}
+.chip-pink{background:rgba(236,72,153,.15);color:#F472B6;border:1px solid rgba(236,72,153,.25);}
+.chip-cyan{background:rgba(6,182,212,.15);color:var(--cyan);border:1px solid rgba(6,182,212,.25);}
+.chip-amber{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.25);}
+
+/* ===== PROJECTS ===== */
+#projects{padding:7rem 5%;}
+.projects-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;margin-top:3rem;
+}
+.proj-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:1.75rem;
+  position:relative;overflow:hidden;
+  transition:all .4s ease;
+  display:flex;flex-direction:column;gap:1rem;
+}
+.proj-card::before{
+  content:'';position:absolute;top:0;left:-100%;right:100%;
+  height:2px;
+  background:linear-gradient(90deg,var(--indigo),var(--pink),var(--cyan));
+  transition:left .5s ease,right .5s ease;
+}
+.proj-card:hover::before{left:0;right:0;}
+.proj-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.4),0 0 0 1px rgba(79,70,229,0.2);
+}
+.proj-emoji{font-size:2.5rem;line-height:1;}
+.proj-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;}
+.proj-desc{font-size:.83rem;color:var(--text2);line-height:1.6;flex:1;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:auto;}
+.proj-tag{
+  padding:.2rem .6rem;border-radius:100px;
+  font-size:.65rem;font-weight:600;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  color:var(--text3);
+}
+
+/* ===== EDUCATION ===== */
+#education{padding:7rem 5%;background:var(--bg2);}
+.edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem;}
+.edu-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:2rem;
+  transition:all .4s ease;
+  position:relative;overflow:hidden;
+}
+.edu-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--indigo),var(--cyan));
+}
+.edu-card:hover{transform:translateY(-4px);box-shadow:0 16px 50px rgba(0,0,0,.35);}
+.edu-icon{font-size:2rem;margin-bottom:1rem;}
+.edu-degree{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;}
+.edu-field{font-size:.85rem;color:var(--cyan);margin-bottom:.25rem;}
+.edu-school{font-size:.82rem;color:var(--text2);}
+.edu-year{font-size:.75rem;color:var(--text3);margin-top:.5rem;}
+
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem;}
+.lang-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;text-align:center;
+  transition:all .3s ease;
+}
+.lang-card:hover{transform:translateY(-4px);}
+.lang-flag{font-size:2rem;margin-bottom:.75rem;}
+.lang-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.5rem;}
+.lang-badge{
+  display:inline-block;
+  padding:.3rem .8rem;border-radius:100px;
+  font-size:.7rem;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;
+  animation:badgePulse 2.5s ease-in-out infinite;
+}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 currentColor;}50%{box-shadow:0 0 0 4px transparent;}}
+.badge-native{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.badge-fluent{background:rgba(6,182,212,.15);color:var(--cyan);border:1px solid rgba(6,182,212,.3);}
+.badge-prof{background:rgba(79,70,229,.15);color:#818CF8;border:1px solid rgba(79,70,229,.3);}
+
+/* ===== CONTACT ===== */
+#contact{padding:7rem 5%;}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-top:3rem;}
+.contact-cards{display:flex;flex-direction:column;gap:1rem;}
+.contact-card{
+  display:flex;align-items:center;gap:1rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:1.25rem 1.5rem;
+  text-decoration:none;color:inherit;
+  transition:all .3s ease;
+}
+.contact-card:hover{
+  transform:translateX(8px);
+  border-color:rgba(6,182,212,.35);
+  box-shadow:0 8px 30px rgba(6,182,212,.1);
+}
+.contact-icon{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.ci-cyan{background:rgba(6,182,212,.15);color:var(--cyan);}
+.ci-pink{background:rgba(236,72,153,.15);color:var(--pink);}
+.ci-amber{background:rgba(245,158,11,.15);color:var(--amber);}
+.ci-indigo{background:rgba(79,70,229,.15);color:#818CF8;}
+.contact-label{font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;}
+.contact-value{font-size:.9rem;font-weight:500;color:var(--text);}
+
+.contact-right{display:flex;align-items:center;justify-content:center;}
+.ripple-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:200px;height:200px;}
+.ripple-ring{
+  position:absolute;width:100%;height:100%;border-radius:50%;
+  border:1px solid rgba(6,182,212,.35);
+  animation:rippleOut 3s ease-out infinite;
+}
+.ripple-ring:nth-child(2){animation-delay:1s;}
+.ripple-ring:nth-child(3){animation-delay:2s;}
+@keyframes rippleOut{
+  0%{transform:scale(0.6);opacity:.8;}
+  100%{transform:scale(1.4);opacity:0;}
+}
+.contact-avatar{
+  position:relative;z-index:2;
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,var(--indigo),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;
+  box-shadow:0 0 40px rgba(79,70,229,.5);
+}
+
+/* ===== FOOTER ===== */
+footer{
+  padding:2rem 5%;
+  border-top:1px solid var(--border);
+  background:var(--bg2);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;
+}
+.footer-brand{
+  font-family:'Syne',sans-serif;font-weight:800;
+  background:linear-gradient(135deg,var(--cyan),var(--indigo));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.footer-copy{font-size:.8rem;color:var(--text3);}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal{
+  opacity:0;transition:opacity .7s ease,transform .7s ease;
+}
+.reveal.fade-up{transform:translateY(40px);}
+.reveal.slide-left{transform:translateX(-50px);}
+.reveal.slide-right{transform:translateX(50px);}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:900px){
+  .hero-inner{flex-direction:column;text-align:center;padding-top:7rem;}
+  .hero-right{display:none;}
+  .hero-desc{margin:0 auto 2rem;}
+  .hero-ctas{justify-content:center;}
+  .skills-grid{grid-template-columns:1fr;}
+  .projects-grid{grid-template-columns:1fr 1fr;}
+  .edu-grid{grid-template-columns:1fr;}
+  .contact-inner{grid-template-columns:1fr;}
+  .contact-right{order:-1;}
+}
+@media(max-width:600px){
+  .nav-links{display:none;}
+  .nav-burger{display:flex;}
+  .projects-grid{grid-template-columns:1fr;}
+  .lang-grid{grid-template-columns:1fr 1fr;}
+  .timeline{padding-left:2rem;}
+  .tl-header{flex-direction:column;}
+  .tl-meta{align-items:flex-start;}
+}
+.mobile-menu{
+  position:fixed;inset:0;z-index:998;
+  background:rgba(10,10,15,.97);
+  backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2rem;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.mobile-menu.open{opacity:1;pointer-events:all;}
+.mobile-menu a{
+  font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;
+  color:var(--text2);text-decoration:none;
+  transition:color .3s;
+}
+.mobile-menu a:hover{color:var(--cyan);}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-initials">EZ</div>
+  <div class="loader-text">Chargement du portfolio</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particle-canvas"></canvas>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#hero" onclick="closeMob()">Accueil</a>
+  <a href="#skills" onclick="closeMob()">Compétences</a>
+  <a href="#experience" onclick="closeMob()">Expérience</a>
+  <a href="#projects" onclick="closeMob()">Projets</a>
+  <a href="#education" onclick="closeMob()">Formation</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">EZ</a>
+  <ul class="nav-links">
+    <li><a href="#skills">Compétences</a></li>
+    <li><a href="#experience">Expérience</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#education">Formation</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-burger" onclick="toggleMob()" id="burger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left reveal fade-up">
+      <div class="avail-tag">Disponible pour opportunités</div>
+      <h1 class="hero-name">Eljaouhary<br>Zakaria</h1>
+      <p class="hero-title">Technicien d'Exploitation Industrielle<br>Agent de Maîtrise · Centrale Électrique</p>
+      <p class="hero-desc">Spécialiste en conduite et surveillance d'installations énergétiques ultra-supercritiques. Plus de 5 ans d'expérience en centrale à charbon 2×693 MW.</p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn btn-primary">Me contacter →</a>
+        <a href="#experience" class="btn btn-secondary">Voir l'expérience</a>
+      </div>
+    </div>
+    <div class="hero-right reveal slide-right">
+      <div class="card-orbit">
+        <div class="orbit-glow"></div>
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring-2"></div>
+        <div class="float-card">
+          <div class="card-avatar">EZ</div>
+          <div class="card-name">Eljaouhary Zakaria</div>
+          <div class="card-role">Technicien d'Exploitation</div>
+          <div class="card-stats">
+            <div class="stat"><div class="stat-val">5+</div><div class="stat-lab">Ans exp.</div></div>
+            <div class="stat"><div class="stat-val">2×693</div><div class="stat-lab">MW centrale</div></div>
+            <div class="stat"><div class="stat-val">3</div><div class="stat-lab">Langues</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><span class="dot"></span>Centrale Électrique Charbon</div>
+    <div class="marquee-item"><span class="dot"></span>Centrale Gypse Safi</div>
+    <div class="marquee-item"><span class="dot"></span>ONCF</div>
+    <div class="marquee-item"><span class="dot"></span>Ultra-Supercritique 2×693 MW</div>
+    <div class="marquee-item"><span class="dot"></span>ESP · FGD · CPP</div>
+    <div class="marquee-item"><span class="dot"></span>Emerson Ovation · PCS7 Siemens</div>
+    <div class="marquee-item"><span class="dot"></span>QHSE · Sécurité Industrielle</div>
+    <!-- duplicate for loop -->
+    <div class="marquee-item"><span class="dot"></span>Centrale Électrique Charbon</div>
+    <div class="marquee-item"><span class="dot"></span>Centrale Gypse Safi</div>
+    <div class="marquee-item"><span class="dot"></span>ONCF</div>
+    <div class="marquee-item"><span class="dot"></span>Ultra-Supercritique 2×693 MW</div>
+    <div class="marquee-item"><span class="dot"></span>ESP · FGD · CPP</div>
+    <div class="marquee-item"><span class="dot"></span>Emerson Ovation · PCS7 Siemens</div>
+    <div class="marquee-item"><span class="dot"></span>QHSE · Sécurité Industrielle</div>
+  </div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="reveal fade-up">
+    <div class="section-label">Savoir-faire</div>
+    <h2 class="section-title">Compétences</h2>
+    <p class="section-sub">Maîtrise technique et opérationnelle acquise sur des installations industrielles de haute complexité.</p>
+  </div>
+  <div class="skills-grid">
+    <div class="skills-bars reveal slide-left">
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Conduite d'installations (chaudières, turbines)</span><span class="skill-pct">95%</span></div>
+        <div class="skill-track"><div class="skill-fill indigo" data-pct="95"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Salle de contrôle & DCS (Emerson Ovation)</span><span class="skill-pct">90%</span></div>
+        <div class="skill-track"><div class="skill-fill cyan" data-pct="90"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">PCS7 Siemens</span><span class="skill-pct">85%</span></div>
+        <div class="skill-track"><div class="skill-fill pink" data-pct="85"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Diagnostic & Actions correctives</span><span class="skill-pct">92%</span></div>
+        <div class="skill-track"><div class="skill-fill amber" data-pct="92"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">QHSE & Gestion des urgences</span><span class="skill-pct">88%</span></div>
+        <div class="skill-track"><div class="skill-fill indigo" data-pct="88"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">SolidWorks / CATIA v5 / AutoCAD</span><span class="skill-pct">75%</span></div>
+        <div class="skill-track"><div class="skill-fill cyan" data-pct="75"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Maintenance préventive & corrective</span><span class="skill-pct">87%</span></div>
+        <div class="skill-track"><div class="skill-fill pink" data-pct="87"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Pneumatique / Hydraulique / Électrique</span><span class="skill-pct">80%</span></div>
+        <div class="skill-track"><div class="skill-fill amber" data-pct="80"></div></div>
+      </div>
+    </div>
+    <div class="reveal slide-right" style="padding-top:0">
+      <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;">Technologies maîtrisées</p>
+      <div class="tech-cloud">
+        <span class="tech-chip ic">⚡ ESP</span>
+        <span class="tech-chip cy">💨 FGD</span>
+        <span class="tech-chip am">🔥 Chaudière</span>
+        <span class="tech-chip pk">💧 CPP</span>
+        <span class="tech-chip ic">🖥 Emerson Ovation</span>
+        <span class="tech-chip cy">🔧 PCS7 Siemens</span>
+        <span class="tech-chip am">📐 SolidWorks</span>
+        <span class="tech-chip pk">📐 CATIA v5</span>
+        <span class="tech-chip ic">📐 AutoCAD</span>
+        <span class="tech-chip cy">♻ Turbine à Vapeur</span>
+        <span class="tech-chip am">🛡 QHSE</span>
+        <span class="tech-chip pk">🔌 Habilitation BC/HC/MC</span>
+        <span class="tech-chip ic">📊 Excel / Word / PowerPoint</span>
+        <span class="tech-chip cy">🏭 Ultra-Supercritique</span>
+        <span class="tech-chip am">🔩 Pneumatique</span>
+        <span class="tech-chip pk">💦 Hydraulique</span>
+        <span class="tech-chip ic">⚙ Mécanique</span>
+        <span class="tech-chip cy">⚡ Électrique</span>
+        <span class="tech-chip am">🧪 NH₃ Safety</span>
+        <span class="tech-chip pk">🧰 Maintenance Niv.1</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal fade-up">
+    <div class="section-label">Parcours</div>
+    <h2 class="section-title">Expériences</h2>
+    <p class="section-sub">Un parcours solide dans l'exploitation d'installations industrielles complexes à haute disponibilité.</p>
+  </div>
+  <div class="timeline">
+
+    <div class="tl-item reveal slide-left">
+      <div class="tl-dot"></div>
+      <div class="tl-header">
+        <div>
+          <div class="tl-title">Agent de Maîtrise — Technicien d'Exploitation</div>
+          <div class="tl-company">Centrale Électrique Charbon Ultra-Supercritique</div>
+        </div>
+        <div class="tl-meta">
+          <span class="tl-date">Avril 2019 — Présent</span>
+          <span class="tl-loc">📍 Maroc</span>
+        </div>
+      </div>
+      <ul class="tl-desc">
+        <li>Surveillance et conduite des installations de production d'énergie (chaudières, turbines à vapeur, échangeurs, systèmes auxiliaires) sur une centrale 2×693 MW.</li>
+        <li>Pilotage des équipements en salle de contrôle (DCS Emerson Ovation) et sur le terrain.</li>
+        <li>Analyse des paramètres d'exploitation et optimisation des performances des unités.</li>
+        <li>Détection des anomalies, diagnostic et mise en œuvre d'actions correctives rapides.</li>
+        <li>Application rigoureuse des procédures QHSE et gestion des situations d'urgence.</li>
+        <li>Supervision des opérations de démarrage et d'arrêt des installations.</li>
+        <li>Réalisation de la maintenance de premier niveau et coordination avec les équipes.</li>
+      </ul>
+      <div class="tl-chips">
+        <span class="chip chip-indigo">ESP</span>
+        <span class="chip chip-cyan">FGD</span>
+        <span class="chip chip-amber">Chaudière Aux.</span>
+        <span class="chip chip-pink">CPP</span>
+        <span class="chip chip-indigo">Emerson Ovation</span>
+        <span class="chip chip-cyan">QHSE</span>
+        <span class="chip chip-amber">Ultra-Supercritique</span>
+      </div>
+    </div>
+
+    <div class="tl-item reveal slide-left">
+      <div class="tl-dot"></div>
+      <div class="tl-header">
+        <div>
+          <div class="tl-title">Stagiaire Technicien de Maintenance</div>
+          <div class="tl-company">Centrale Gypse — Safi</div>
+        </div>
+        <div class="tl-meta">
+          <span class="tl-date">Août — Décembre 2017</span>
+          <span class="tl-loc">📍 Safi, Maroc</span>
+        </div>
+      </div>
+      <ul class="tl-desc">
+        <li>Surveillance et traitement des données : évolution d'ampérage, variation des fréquences, suivi des indicateurs de performance.</li>
+        <li>Réalisation des rondes de toutes les unités de production (concassage, calcination, broyage).</li>
+        <li>Entretien et maintenance préventive et corrective des différents équipements.</li>
+        <li>Exécution des tâches pneumatique, hydraulique, mécanique et électrique.</li>
+      </ul>
+      <div class="tl-chips">
+        <span class="chip chip-pink">Stage de fin d'étude</span>
+        <span class="chip chip-cyan">Maintenance</span>
+        <span class="chip chip-amber">Pneumatique</span>
+        <span class="chip chip-indigo">Hydraulique</span>
+      </div>
+    </div>
+
+    <div class="tl-item reveal slide-left">
+      <div class="tl-dot"></div>
+      <div class="tl-header">
+        <div>
+          <div class="tl-title">Stagiaire — Maintenance Locomotive</div>
+          <div class="tl-company">ONCF — Office National des Chemins de Fer</div>
+        </div>
+        <div class="tl-meta">
+          <span class="tl-date">Août 2016</span>
+          <span class="tl-loc">📍 Maroc</span>
+        </div>
+      </div>
+      <ul class="tl-desc">
+        <li>Découverte des systèmes de maintenance et de fonctionnement des locomotives électriques.</li>
+        <li>Initiation aux procédures de maintenance ferroviaire et inspection des équipements.</li>
+      </ul>
+      <div class="tl-chips">
+        <span class="chip chip-amber">Stage d'initiation</span>
+        <span class="chip chip-cyan">Locomotive Électrique</span>
+        <span class="chip chip-pink">Ferroviaire</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal fade-up">
+    <div class="section-label">Réalisations</div>
+    <h2 class="section-title">Projets & Missions</h2>
+    <p class="section-sub">Missions techniques menées sur des équipements industriels critiques.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="proj-card reveal fade-up">
+      <div class="proj-emoji">⚡</div>
+      <div class="proj-name">Conduite Centrale Ultra-Supercritique</div>
+      <div class="proj-desc">Opération quotidienne d'une centrale à charbon 2×693 MW. Supervision DCS, gestion des paramètres vapeur, surveillance continue des chaudières et turbines.</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Emerson Ovation</span>
+        <span class="proj-tag">DCS</span>
+        <span class="proj-tag">2×693 MW</span>
+        <span class="proj-tag">Chaudière</span>
+      </div>
+    </div>
+    <div class="proj-card reveal fade-up">
+      <div class="proj-emoji">🌫</div>
+      <div class="proj-name">Gestion ESP & FGD</div>
+      <div class="proj-desc">Exploitation et surveillance des précipitateurs électrostatiques (ESP) et du système de désulfuration des fumées (FGD) pour conformité environnementale.</div>
+      <div class="proj-tags">
+        <span class="proj-tag">ESP</span>
+        <span class="proj-tag">FGD</span>
+        <span class="proj-tag">Environnement</span>
+        <span class="proj-tag">QHSE</span>
+      </div>
+    </div>
+    <div class="proj-card reveal fade-up">
+      <div class="proj-emoji">💧</div>
+      <div class="proj-name">Polissage des Condensats (CPP)</div>
+      <div class="proj-desc">Supervision du système CPP pour maintenir la qualité de l'eau de cycle, garantissant la protection des équipements vapeur de haute pression.</div>
+      <div class="proj-tags">
+        <span class="proj-tag">CPP</span>
+        <span class="proj-tag">Traitement eau</span>
+        <span class="proj-tag">Cycle vapeur</span>
+      </div>
+    </div>
+    <div class="proj-card reveal fade-up">
+      <div class="proj-emoji">🔥</div>
+      <div class="proj-name">Démarrage & Arrêt d'Installations</div>
+      <div class="proj-desc">Coordination et supervision des séquences de démarrage à froid/chaud et d'arrêt planifié des unités de production selon les procédures constructeur.</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Démarrage</span>
+        <span class="proj-tag">Procédures</span>
+        <span class="proj-tag">Sécurité</span>
+      </div>
+    </div>
+    <div class="proj-card reveal fade-up">
+      <div class="proj-emoji">📊</div>
+      <div class="proj-name">Optimisation des Performances</div>
+      <div class="proj-desc">Analyse continue des paramètres d'exploitation, identification des dérives, proposition et mise en œuvre de modifications de processus pour améliorer le rendement.</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Analyse données</span>
+        <span class="proj-tag">Optimisation</span>
+        <span class="proj-tag">KPI</span>
+      </div>
+    </div>
+    <div class="proj-card reveal fade-up">
+      <div class="proj-emoji">🏭</div>
+      <div class="proj-name">Maintenance Centrale Gypse</div>
+      <div class="proj-desc">Stage de fin d'études avec maintenance complète des lignes de production gypse : concassage, calcination, broyage. Diagnostics et interventions multi-disciplines.</div>
+      <div class="proj-tags">
+        <span class="proj-tag">PCS7 Siemens</span>
+        <span class="proj-tag">Calcination</span>
+        <span class="proj-tag">Broyage</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="reveal fade-up">
+    <div class="section-label">Parcours académique</div>
+    <h2 class="section-title">Formation & Langues</h2>
+    <p class="section-sub">Une formation technique solide complétée par des certifications professionnelles spécialisées.</p>
+  </div>
+  <div class="edu-grid" style="margin-top:3rem">
+    <div class="edu-card reveal slide-left">
+      <div class="edu-icon">🎓</div>
+      <div class="edu-degree">DUT — Génie Industriel et Maintenance</div>
+      <div class="edu-field">Diplôme Universitaire de Technologie</div>
+      <div class="edu-school">École Supérieure de Technologie</div>
+      <div class="edu-year">Maroc</div>
+    </div>
+    <div class="edu-card reveal slide-right">
+      <div class="edu-icon">📘</div>
+      <div class="edu-degree">Baccalauréat Scientifique</div>
+      <div class="edu-field">Science Technologique Mécanique</div>
+      <div class="edu-school">Lycée Technique El Khawarizmi</div>
+      <div class="edu-year">Juin 2014</div>
+    </div>
+  </div>
+
+  <!-- Certifications -->
+  <div style="margin-top:3rem" class="reveal fade-up">
+    <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1.25rem;">Certifications & Habilitations</p>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+      <span class="tech-chip am">🛡 Habilitation BC / HC / MC (NF C18-510)</span>
+      <span class="tech-chip pk">⚗ Évaluation risques Ammoniac</span>
+      <span class="tech-chip cy">🏭 Sécurité Industrielle</span>
+      <span class="tech-chip ic">🤝 Soft Skills (Formation certifiée)</span>
+    </div>
+  </div>
+
+  <!-- Languages -->
+  <div style="margin-top:3rem" class="reveal fade-up">
+    <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1.25rem;">Langues</p>
+    <div class="lang-grid">
+      <div class="lang-card">
+        <div class="lang-flag">🇲🇦</div>
+        <div class="lang-name">Arabe</div>
+        <span class="lang-badge badge-native">Langue maternelle</span>
+      </div>
+      <div class="lang-card">
+        <div class="lang-flag">🇫🇷</div>
+        <div class="lang-name">Français</div>
+        <span class="lang-badge badge-fluent">Lu · Écrit · Parlé</span>
+      </div>
+      <div class="lang-card">
+        <div class="lang-flag">🇬🇧</div>
+        <div class="lang-name">Anglais</div>
+        <span class="lang-badge badge-prof">Lu · Écrit · Parlé</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal fade-up">
+    <div class="section-label">Disponible</div>
+    <h2 class="section-title">Contact</h2>
+    <p class="section-sub">Ouvert à de nouvelles opportunités professionnelles dans le domaine de l'exploitation industrielle.</p>
+  </div>
+  <div class="contact-inner">
+    <div class="contact-cards reveal slide-left">
+      <a href="mailto:Zakaria.eljouhary@gmail.com" class="contact-card">
+        <div class="contact-icon ci-cyan">✉</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">Zakaria.eljouhary@gmail.com</div>
+        </div>
+      </a>
+      <a href="tel:+212647638404" class="contact-card">
+        <div class="contact-icon ci-pink">📞</div>
+        <div>
+          <div class="contact-label">Téléphone</div>
+          <div class="contact-value">+212 647 638 404</div>
+        </div>
+      </a>
+      <div class="contact-card">
+        <div class="contact-icon ci-amber">📍</div>
+        <div>
+          <div class="contact-label">Localisation</div>
+          <div class="contact-value">Safi, Maroc</div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon ci-indigo">🚗</div>
+        <div>
+          <div class="contact-label">Permis de conduire</div>
+          <div class="contact-value">Permis B</div>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon ci-cyan">✅</div>
+        <div>
+          <div class="contact-label">Disponibilité</div>
+          <div class="contact-value">Disponible — Ouvert aux offres</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right reveal slide-right">
+      <div class="ripple-wrap">
+        <div class="ripple-ring"></div>
+        <div class="ripple-ring"></div>
+        <div class="ripple-ring"></div>
+        <div class="contact-avatar">EZ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <span class="footer-brand">Eljaouhary Zakaria</span>
+  <span class="footer-copy">© 2025 · Technicien d'Exploitation Industrielle · Safi, Maroc</span>
+</footer>
+
+<script>
+/* ===== LOADER ===== */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('fade-out');
+  },2200);
+});
+
+/* ===== CUSTOM CURSOR ===== */
+const dot=document.getElementById('cursor-dot');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*.12;
+  ry+=(my-ry)*.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,.btn,.tl-item,.proj-card,.contact-card,.edu-card,.lang-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    dot.style.width='12px';dot.style.height='12px';
+    ring.style.width='50px';ring.style.height='50px';
+    ring.style.borderColor='rgba(236,72,153,0.6)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    dot.style.width='8px';dot.style.height='8px';
+    ring.style.width='36px';ring.style.height='36px';
+    ring.style.borderColor='rgba(6,182,212,0.5)';
+  });
+});
+
+/* ===== PARTICLE CANVAS ===== */
+const canvas=document.getElementById('particle-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,particles=[];
+const COLORS=['#4F46E5','#EC4899','#06B6D4','#F59E0B'];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+resize();
+window.addEventListener('resize',()=>{resize();initParticles();});
+class Particle{
+  constructor(){this.reset();}
+  reset(){
+    this.x=Math.random()*W;
+    this.y=Math.random()*H;
+    this.vx=(Math.random()-.5)*.4;
+    this.vy=(Math.random()-.5)*.4;
+    this.r=Math.random()*2+1;
+    this.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    this.alpha=Math.random()*.5+.2;
+  }
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle=this.color;
+    ctx.globalAlpha=this.alpha;
+    ctx.fill();
+    ctx.globalAlpha=1;
+  }
+}
+function initParticles(){
+  particles=[];
+  const count=Math.min(Math.floor(W*H/12000),120);
+  for(let i=0;i<count;i++)particles.push(new Particle());
+}
+initParticles();
+function drawLines(){
+  const maxDist=130;
+  for(let i=0;i<particles.length;i++){
+    for(let j=i+1;j<particles.length;j++){
+      const dx=particles[i].x-particles[j].x;
+      const dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<maxDist){
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x,particles[i].y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        const alpha=(1-d/maxDist)*.15;
+        ctx.strokeStyle=particles[i].color;
+        ctx.globalAlpha=alpha;
+        ctx.lineWidth=.5;
+        ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+    }
+  }
+}
+function animate(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw();});
+  drawLines();
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* ===== SCROLL REVEAL ===== */
+const revealEls=document.querySelectorAll('.reveal');
+const revealObs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>{e.target.classList.add('visible');},i*80);
+      revealObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.12});
+revealEls.forEach(el=>revealObs.observe(el));
+
+/* ===== SKILL BARS ===== */
+const skillObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const fills=e.target.querySelectorAll('.skill-fill');
+      fills.forEach(f=>{
+        const pct=f.getAttribute('data-pct');
+        setTimeout(()=>{
+          f.style.width=pct+'%';
+          f.classList.add('animated');
+        },200);
+      });
+      skillObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.skills-bars').forEach(el=>skillObs.observe(el));
+
+/* ===== MOBILE MENU ===== */
+function toggleMob(){
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMob(){
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+</script>
+</body>
+</html>
